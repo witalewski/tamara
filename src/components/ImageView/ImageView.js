@@ -6,16 +6,47 @@ class ImageView extends Component {
     requestAnimationFrame(() => {
       this.canvas = document.getElementsByClassName('ImageView-canvas')[0]
       this.canvasContext2d = this.canvas.getContext('2d')
-      this.canvasContext2d.fillStyle = 'rgb(200, 0, 0)'
-      this.canvasContext2d.fillRect(10, 10, 60, 60)
-
-      this.canvasContext2d.fillStyle = 'rgb(0, 0, 200)'
-      this.canvasContext2d.fillRect(40, 40, 60, 60)
-
-      this.canvasContext2d.fillStyle = 'rgb(150,0,150)'
-
-      this.el = document.getElementsByClassName('ImageView')[0]
+      this.drawTamaraPortrait()
+      this.canvasContext2d.fillStyle = this.props.color
     })
+  }
+
+  componentDidUpdate() {
+    this.canvasContext2d.fillStyle = this.props.color
+  }
+
+  drawTamaraPortrait() {
+    let i, j
+    this.canvasContext2d.fillStyle = '#427e59'
+    for (i = 10; i < 19; i++) {
+      for (j = 10; j < 19; j++) {
+        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+      }
+    }
+    this.canvasContext2d.fillStyle = '#f5e9cf'
+    for (i = 13; i < 15; i++) {
+      for (j = 12; j < 15; j++) {
+        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+      }
+    }
+    i = 14
+    j = 15
+    this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+    this.canvasContext2d.fillStyle = '#ceb18e'
+    for (i = 13; i < 16; i++) {
+      j = 11
+      this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+    }
+    i = 15
+    for (j = 11; j < 15; j++) {
+      this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+    }
+    this.canvasContext2d.fillStyle = '#7aac98'
+    for (i = 13; i < 15; i++) {
+      for (j = 16; j < 19; j++) {
+        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+      }
+    }
   }
 
   fillPixel(eventClientX, eventClientY) {
@@ -46,8 +77,8 @@ class ImageView extends Component {
   render() {
     const canvas = (
       <canvas
-        width="1500"
-        height="500"
+        width="2000"
+        height="2000"
         className="ImageView-canvas"
         onMouseDown={event => this.handleCanvasMouseDown(event)}
         onMouseMove={event => this.handleCanvasMouseMove(event)}

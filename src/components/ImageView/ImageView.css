@@ -1,8 +1,11 @@
 .ImageView {
-  overflow: hidden;
+  overflow: scroll;
+  height: 90vh;
+  width: 80vw;
 }
 
 .ImageView-canvas {
+  cursor: crosshair;
   background-size: 20px 20px;
   background-image: linear-gradient(
       to right,
@@ -10,9 +13,4 @@
       transparent 1px
     ),
     linear-gradient(to bottom, rgba(64, 64, 64, 0.5) 1px, transparent 1px);
-
-  /* cursor: grab; */
-  /* top: 0px; */
-  /* left: 0px; */
-  /* position: relative; */
 }

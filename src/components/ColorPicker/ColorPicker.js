@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { setColor } from '../../actions'
 import PaletteItem from './PaletteItem'
 import './ColorPicker.css'
 
@@ -12,6 +14,8 @@ class ColorPicker extends Component {
       '#c2d2bf',
       '#000000',
       '#ffffff',
+      'magenta',
+      'cyan',
     ]
     return (
       <div className="ColorPicker">
@@ -20,6 +24,7 @@ class ColorPicker extends Component {
             key={color}
             color={color}
             setColor={() => this.props.setColor(color)}
+            selected={color === this.props.color}
           />
         ))}
       </div>
@@ -27,4 +32,15 @@ class ColorPicker extends Component {
   }
 }
 
-export default ColorPicker
+const mapStateToProps = state => ({
+  color: state.color,
+})
+
+const mapDispatchToProps = dispatch => ({
+  setColor: color => dispatch(setColor(color)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ColorPicker)

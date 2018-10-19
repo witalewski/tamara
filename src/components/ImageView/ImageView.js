@@ -1,76 +1,86 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { drawPixel } from '../../actions'
 import './ImageView.css'
 
 class ImageView extends Component {
+  constructor(props) {
+    super(props)
+    this.lastMouseMove = [0, 0]
+  }
+  drawImage(image) {
+    image.forEach((column, i) => {
+      column.forEach((row, j) => {
+        this.canvasContext2d.fillStyle = row
+        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
+      })
+    })
+  }
+
   componentDidMount() {
     requestAnimationFrame(() => {
       this.canvas = document.getElementsByClassName('ImageView-canvas')[0]
       this.canvasContext2d = this.canvas.getContext('2d')
-      this.drawTamaraPortrait()
+      this.drawImage(this.props.currentImage)
+      // this.drawTamaraPortrait()
       this.canvasContext2d.fillStyle = this.props.color
     })
   }
 
   componentDidUpdate() {
+    this.drawImage(this.props.currentImage)
     this.canvasContext2d.fillStyle = this.props.color
   }
 
-  drawTamaraPortrait() {
-    let i, j
-    this.canvasContext2d.fillStyle = '#427e59'
-    for (i = 10; i < 19; i++) {
-      for (j = 10; j < 19; j++) {
-        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-      }
-    }
-    this.canvasContext2d.fillStyle = '#f5e9cf'
-    for (i = 13; i < 15; i++) {
-      for (j = 12; j < 15; j++) {
-        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-      }
-    }
-    i = 14
-    j = 15
-    this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-    this.canvasContext2d.fillStyle = '#ceb18e'
-    for (i = 13; i < 16; i++) {
-      j = 11
-      this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-    }
-    i = 15
-    for (j = 11; j < 15; j++) {
-      this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-    }
-    this.canvasContext2d.fillStyle = '#7aac98'
-    for (i = 13; i < 15; i++) {
-      for (j = 16; j < 19; j++) {
-        this.canvasContext2d.fillRect(i * 20, j * 20, 20, 20)
-      }
-    }
-  }
-
-  fillPixel(eventClientX, eventClientY) {
-    requestAnimationFrame(() => {
-      const canvasOffset = this.canvas.getBoundingClientRect()
-      const [x, y] = [
-        eventClientX - canvasOffset.left,
-        eventClientY - canvasOffset.top,
-      ].map(e => e - (e % 20))
-      this.canvasContext2d.fillRect(x, y, 20, 20)
-    })
+  findPixel(eventClientX, eventClientY) {
+    const canvasOffset = this.canvas.getBoundingClientRect()
+    return [
+      eventClientX - canvasOffset.left,
+      eventClientY - canvasOffset.top,
+    ].map(e => Math.floor(e / 20))
   }
   handleCanvasMouseDown(event) {
     this.fillInProgress = true
-    this.fillPixel(event.clientX, event.clientY)
+    this.props.drawPixel(
+      ...this.findPixel(event.clientX, event.clientY),
+      this.props.color
+    )
   }
 
-  handleCanvasMouseMove(event) {
-    if (this.fillInProgress) {
-      this.fillPixel(event.clientX, event.clientY)
+  drawLine(startX, startY, endX, endY) {
+    const [fromX, fromY] = this.findPixel(
+      Math.min(startX, endX),
+      Math.min(startY, endY)
+    )
+    const [toX, toY] = this.findPixel(
+      Math.max(startX, endX),
+      Math.max(startY, endY)
+    )
+    for (let i = fromX; i <= toX; i++) {
+      const segmentFromY = fromY + Math.floor((i - fromX) / (toX - fromX))
+      const segmentToY = Math.floor(
+        (i + Math.sign((endX = startX)) - fromX) / (toX - fromX)
+      )
+      for (let j = segmentFromY; j <= segmentToY; j++) {
+        this.props.drawPixel(i, j, this.props.color)
+      }
     }
   }
 
+  handleCanvasMouseMove(event) {
+    const [x, y] = [event.clientX, event.clientY]
+    if (this.fillInProgress) {
+      this.drawLine(x, y, ...this.lastMouseMove)
+    }
+    this.lastMouseMove = [x, y]
+  }
+
   handleCanvasMouseUp(event) {
+    const [x, y] = [event.clientX, event.clientY]
+    if (this.fillInProgress) {
+      this.drawLine(x, y, ...this.lastMouseMove)
+    }
+    this.lastMouseMove = [x, y]
     this.fillInProgress = false
   }
 
@@ -89,4 +99,16 @@ class ImageView extends Component {
   }
 }
 
-export default ImageView
+const mapStateToProps = state => ({
+  color: state.color,
+  currentImage: state.currentImage,
+})
+
+const mapDispatchToProps = dispatch => ({
+  drawPixel: (x, y, color) => dispatch(drawPixel(x, y, color)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ImageView)

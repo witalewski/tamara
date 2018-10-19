@@ -4,11 +4,6 @@ import ColorPicker from './components/ColorPicker/ColorPicker'
 import './App.css'
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { color: '#427e59' }
-  }
-
   render() {
     return (
       <div className="App">
@@ -22,9 +17,9 @@ class App extends Component {
         </header>
         <div className="App-main">
           <nav className="App-nav">
-            <ColorPicker setColor={color => this.setState({ color })} />
+            <ColorPicker />
           </nav>
-          <ImageView color={this.state.color} />
+          <ImageView />
         </div>
       </div>
     )

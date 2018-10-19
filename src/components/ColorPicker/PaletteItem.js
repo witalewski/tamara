@@ -1,8 +1,8 @@
 import React from 'react'
 
-const PaletteItem = ({ color, setColor }) => (
+const PaletteItem = ({ color, setColor, selected }) => (
   <div
-    className="PaletteItem"
+    className={`PaletteItem ${selected ? 'selected' : ''}`}
     style={{ backgroundColor: color }}
     onClick={() => setColor(color)}
   />

@@ -6,9 +6,10 @@
   background-color: #282c34;
   height: 10vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
+  padding: 0px 40px;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -30,6 +31,7 @@
   justify-content: space-between;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 40px 0px;
 }
 
 .App-link {

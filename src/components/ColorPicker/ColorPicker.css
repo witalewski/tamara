@@ -1,10 +1,15 @@
 .ColorPicker {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .PaletteItem {
   width: 100px;
   height: 100px;
   cursor: pointer;
+}
+
+.PaletteItem.selected {
+  border: 1px #61dafb;
 }
